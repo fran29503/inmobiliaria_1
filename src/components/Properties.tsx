@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { motion, useInView } from "framer-motion"
+import { motion, AnimatePresence, useInView } from "framer-motion"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { properties } from "@/lib/properties"
@@ -27,26 +27,19 @@ export default function Properties() {
   const [cardH, setCardH]           = useState(420)
   const [isMobile, setIsMobile]     = useState(false)
 
-  const headerRef  = useRef<HTMLDivElement>(null)
-  const isInView   = useInView(headerRef, { once: true, margin: "-50px" })
+  const headerRef   = useRef<HTMLDivElement>(null)
+  const isInView    = useInView(headerRef, { once: true, margin: "-50px" })
   const touchStartX = useRef(0)
 
-  // Responsive card dimensions
   useEffect(() => {
     const update = () => {
       const vw = window.innerWidth
       if (vw < 640) {
-        setCardW(vw - 48)
-        setCardH(240)
-        setIsMobile(true)
+        setCardW(vw - 48); setCardH(240); setIsMobile(true)
       } else if (vw < 1024) {
-        setCardW(Math.min(500, vw - 96))
-        setCardH(340)
-        setIsMobile(false)
+        setCardW(Math.min(500, vw - 96)); setCardH(340); setIsMobile(false)
       } else {
-        setCardW(640)
-        setCardH(420)
-        setIsMobile(false)
+        setCardW(640); setCardH(420); setIsMobile(false)
       }
     }
     update()
@@ -55,72 +48,53 @@ export default function Properties() {
   }, [])
 
   const STEP = cardW + GAP
+  const prop = SHOWCASE[active]
 
   const goPrev = () => { setActive(a => mod(a - 1, N)); setImgHovered(false) }
   const goNext = () => { setActive(a => mod(a + 1, N)); setImgHovered(false) }
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX
-  }
-  const onTouchEnd = (e: React.TouchEvent) => {
+  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX }
+  const onTouchEnd   = (e: React.TouchEvent) => {
     const diff = touchStartX.current - e.changedTouches[0].clientX
     if (Math.abs(diff) > 40) { diff > 0 ? goNext() : goPrev() }
   }
 
   return (
-    <section
-      id="properties"
-      style={{
-        background: "#fff",
-        overflow: "hidden",
-        padding: "120px 0 80px",
-        position: "relative",
-      }}
-    >
-      {/* ── HEADER ─────────────────────────────────────────── */}
+    <section id="properties" className="prop-section">
+
+      {/* ── HEADER ─────────────────────────────────────── */}
       <div ref={headerRef} className="prop-header">
         <div>
-          <motion.p
-            className="t-label"
-            style={{ color: "var(--gold)", marginBottom: 12 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
+          <motion.p className="t-label" style={{ color: "var(--gold)", marginBottom: 12 }}
+            initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}>
             Current Portfolio
           </motion.p>
-          <motion.h2
-            className="t-h2"
-            style={{ maxWidth: 520 }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
+          <motion.h2 className="t-h2" style={{ maxWidth: 520 }}
+            initial={{ opacity: 0, y: 30 }} animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1 }}>
             Discover homes designed to inspire.
           </motion.h2>
         </div>
-        <motion.p
-          className="t-body prop-header__desc"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        <motion.p className="t-body prop-header__desc"
+          initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}>
           Handpicked residences where luxury, design, and comfort meet.
         </motion.p>
       </div>
 
-      {/* ── CAROUSEL ──────────────────────────────────────── */}
+      {/* ── IMAGE TRACK — solo imágenes, altura fija ───── */}
       <div
-        style={{ position: "relative", height: cardH + (isMobile ? 110 : 140) }}
+        className="prop-track"
+        style={{ height: cardH }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {SHOWCASE.map((prop, i) => {
+        {SHOWCASE.map((p, i) => {
           const pos      = relPos(i, active)
           const isCenter = pos === 0
           const isSide   = Math.abs(pos) === 1
           const isFar    = Math.abs(pos) === 2
-
           if (Math.abs(pos) > 2) return null
 
           return (
@@ -137,156 +111,65 @@ export default function Properties() {
                 left:       "50%",
                 top:        0,
                 width:      cardW,
+                height:     cardH,
+                borderRadius: 16,
+                overflow:   "hidden",
+                background: "#e8e4df",
                 filter:     isCenter ? "none" : "blur(1.2px) saturate(0.72)",
                 zIndex:     isCenter ? 10 : isSide ? 5 : 1,
                 cursor:     isSide ? "pointer" : "default",
                 visibility: isFar ? "hidden" : "visible",
+                flexShrink: 0,
               }}
+              onMouseEnter={() => isCenter && setImgHovered(true)}
+              onMouseLeave={() => isCenter && setImgHovered(false)}
               onClick={() => {
                 if (pos === -1) goPrev()
                 if (pos === 1)  goNext()
               }}
             >
-              {/* IMAGE */}
-              <div
-                style={{
-                  position:     "relative",
-                  height:       cardH,
-                  borderRadius: 16,
-                  overflow:     "hidden",
-                  background:   "#e8e4df",
-                  flexShrink:   0,
-                }}
-                onMouseEnter={() => isCenter && setImgHovered(true)}
-                onMouseLeave={() => isCenter && setImgHovered(false)}
-              >
-                <Image
-                  src={prop.images[0]}
-                  alt={prop.address}
-                  fill
-                  sizes={`${cardW}px`}
-                  priority={isCenter || isSide}
-                  style={{
-                    objectFit:      "cover",
-                    objectPosition: "center",
-                    opacity:    isCenter && imgHovered ? 0 : 1,
-                    transition: "opacity 0.4s ease",
-                  }}
+              <Image src={p.images[0]} alt={p.address} fill sizes={`${cardW}px`}
+                priority={isCenter || isSide}
+                style={{ objectFit: "cover", opacity: isCenter && imgHovered ? 0 : 1, transition: "opacity 0.4s ease" }}
+              />
+              {p.images[1] && (
+                <Image src={p.images[1]} alt={p.address} fill sizes={`${cardW}px`}
+                  priority={isCenter}
+                  style={{ objectFit: "cover", opacity: isCenter && imgHovered ? 1 : 0, transition: "opacity 0.4s ease" }}
                 />
-                {prop.images[1] && (
-                  <Image
-                    src={prop.images[1]}
-                    alt={prop.address}
-                    fill
-                    sizes={`${cardW}px`}
-                    priority={isCenter}
-                    style={{
-                      objectFit:      "cover",
-                      objectPosition: "center",
-                      opacity:    isCenter && imgHovered ? 1 : 0,
-                      transition: "opacity 0.4s ease",
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* INFO */}
-              <div style={{ padding: "20px 4px 0" }}>
-                <div
-                  style={{
-                    display:        "flex",
-                    justifyContent: "space-between",
-                    alignItems:     "baseline",
-                    gap:            12,
-                    marginBottom:   10,
-                    flexWrap:       "wrap",
-                  }}
-                >
-                  <h3
-                    style={{
-                      fontFamily:    "var(--font-serif)",
-                      fontSize:      isCenter ? (isMobile ? 20 : 30) : 18,
-                      fontWeight:    700,
-                      color:         "var(--text-primary)",
-                      letterSpacing: "-0.025em",
-                      lineHeight:    1.15,
-                      margin:        0,
-                      transition:    "font-size 0.3s ease",
-                    }}
-                  >
-                    {prop.address.split(",")[0]}
-                  </h3>
-                  <span
-                    style={{
-                      fontFamily:    "var(--font-serif)",
-                      fontSize:      isCenter ? (isMobile ? 20 : 30) : 18,
-                      fontWeight:    700,
-                      color:         "var(--text-primary)",
-                      letterSpacing: "-0.025em",
-                      flexShrink:    0,
-                      transition:    "font-size 0.3s ease",
-                    }}
-                  >
-                    {prop.price}
-                  </span>
-                </div>
-
-                {/* Center card: description + meta */}
-                <div
-                  style={{
-                    opacity:    isCenter ? 1 : 0,
-                    maxHeight:  isCenter ? 100 : 0,
-                    overflow:   "hidden",
-                    transition: "opacity 0.35s ease, max-height 0.35s ease",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize:   isMobile ? 13 : 15,
-                      color:      "var(--text-secondary)",
-                      lineHeight: 1.65,
-                      marginBottom: 12,
-                      maxWidth:   "80%",
-                    }}
-                  >
-                    {prop.beds} bedroom residence in {prop.neighborhood} with{" "}
-                    {prop.sqft.toLocaleString()} sqft.
-                  </p>
-                  <div
-                    style={{
-                      display:  "flex",
-                      gap:      isMobile ? 16 : 28,
-                      fontSize: 13,
-                      color:    "var(--text-muted)",
-                    }}
-                  >
-                    <span>{prop.beds} bedrooms</span>
-                    <span>{prop.baths} bathrooms</span>
-                  </div>
-                </div>
-
-                {/* Side card: single line */}
-                <div
-                  style={{
-                    opacity:    isCenter ? 0 : 1,
-                    maxHeight:  isCenter ? 0 : 40,
-                    overflow:   "hidden",
-                    transition: "opacity 0.35s ease, max-height 0.35s ease",
-                    fontSize:   13,
-                    color:      "var(--text-muted)",
-                  }}
-                >
-                  {prop.beds} bedrooms · {prop.baths} bathrooms
-                </div>
-              </div>
+              )}
             </motion.div>
           )
         })}
-
       </div>
 
-      {/* ── FLECHAS ── */}
-      <div className="prop-arrows">
+      {/* ── INFO — flujo normal, nunca superpone ──────── */}
+      <div className="prop-info" style={{ maxWidth: cardW }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <div className="prop-info__top">
+              <h3 className="prop-info__title">{prop.address.split(",")[0]}</h3>
+              <span className="prop-info__price">{prop.price}</span>
+            </div>
+            <p className="prop-info__desc">
+              {prop.beds} bedroom residence in {prop.neighborhood} with {prop.sqft.toLocaleString()} sqft.
+            </p>
+            <div className="prop-info__meta">
+              <span>{prop.beds} bedrooms</span>
+              <span>{prop.baths} bathrooms</span>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* ── FLECHAS — flujo normal, siempre debajo ────── */}
+      <div className="prop-arrows" style={{ maxWidth: cardW }}>
         <button onClick={goPrev} aria-label="Previous property" className="prop-arrow__btn">
           <ChevronLeft size={20} />
         </button>
@@ -296,6 +179,11 @@ export default function Properties() {
       </div>
 
       <style>{`
+        .prop-section {
+          background: #fff;
+          overflow: hidden;
+          padding: 120px 0 80px;
+        }
         .prop-header {
           max-width: 1400px;
           margin: 0 auto 64px;
@@ -311,32 +199,59 @@ export default function Properties() {
           text-align: right;
           flex-shrink: 0;
         }
-        @media (max-width: 1024px) {
-          .prop-header { padding: 0 48px; }
-          #properties { padding: 80px 0 60px !important; }
+        /* Track: solo contiene las imágenes absolutas */
+        .prop-track {
+          position: relative;
+          overflow: visible;
         }
-        @media (max-width: 768px) {
-          #properties { padding: 60px 0 48px !important; }
-          .prop-header {
-            padding: 0 24px;
-            flex-direction: column;
-            margin-bottom: 40px;
-            gap: 12px;
-          }
-          .prop-header__desc {
-            text-align: left;
-            padding-top: 0;
-            max-width: 100%;
-          }
+        /* Info: flujo normal, centrado bajo el track */
+        .prop-info {
+          margin: 28px auto 0;
+          padding: 0 4px;
         }
-
-        /* ── Flechas ── */
-        .prop-arrows {
+        .prop-info__top {
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
+          align-items: baseline;
           gap: 12px;
-          margin-top: 40px;
-          padding-bottom: 8px;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
+        }
+        .prop-info__title {
+          font-family: var(--font-serif);
+          font-size: clamp(20px, 2.5vw, 30px);
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: -0.025em;
+          line-height: 1.15;
+          margin: 0;
+        }
+        .prop-info__price {
+          font-family: var(--font-serif);
+          font-size: clamp(20px, 2.5vw, 30px);
+          font-weight: 700;
+          color: var(--text-primary);
+          letter-spacing: -0.025em;
+          flex-shrink: 0;
+        }
+        .prop-info__desc {
+          font-size: 15px;
+          color: var(--text-secondary);
+          line-height: 1.65;
+          margin-bottom: 10px;
+        }
+        .prop-info__meta {
+          display: flex;
+          gap: 24px;
+          font-size: 13px;
+          color: var(--text-muted);
+        }
+        /* Flechas: flujo normal, espacio limpio */
+        .prop-arrows {
+          margin: 28px auto 0;
+          padding: 0 4px;
+          display: flex;
+          gap: 12px;
         }
         .prop-arrow__btn {
           width: 48px;
@@ -351,13 +266,32 @@ export default function Properties() {
           color: #fff;
           transition: background 0.25s ease, transform 0.2s ease;
           box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+          flex-shrink: 0;
         }
         .prop-arrow__btn:hover {
           background: var(--gold);
           transform: scale(1.08);
         }
+
+        @media (max-width: 1024px) {
+          .prop-header { padding: 0 48px; }
+          .prop-section { padding: 80px 0 60px; }
+        }
         @media (max-width: 768px) {
-          .prop-arrows { margin-top: 28px; }
+          .prop-section { padding: 60px 0 48px; }
+          .prop-header {
+            padding: 0 24px;
+            flex-direction: column;
+            margin-bottom: 40px;
+            gap: 12px;
+          }
+          .prop-header__desc {
+            text-align: left;
+            padding-top: 0;
+            max-width: 100%;
+          }
+          .prop-info { padding: 0 24px; }
+          .prop-arrows { padding: 0 24px; margin-top: 24px; }
           .prop-arrow__btn { width: 44px; height: 44px; }
         }
       `}</style>
