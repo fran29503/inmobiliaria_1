@@ -111,7 +111,7 @@ export default function Properties() {
 
       {/* ── CAROUSEL ──────────────────────────────────────── */}
       <div
-        style={{ position: "relative", height: cardH + (isMobile ? 128 : 148) }}
+        style={{ position: "relative", height: cardH + (isMobile ? 110 : 140) }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -283,56 +283,43 @@ export default function Properties() {
           )
         })}
 
-        {/* ── ARROWS ── */}
-        {(["prev", "next"] as const).map(dir => {
-          const isPrev = dir === "prev"
-          const mobileStyle = {
-            bottom: 8,
-            top: "auto" as const,
-            left: isPrev ? "calc(50% - 56px)" : "calc(50% + 8px)",
-            transform: "none",
-          }
-          const desktopStyle = {
-            top: cardH / 2 - 24,
-            left: isPrev
-              ? `calc(50% - ${cardW / 2 + GAP / 2 + 24}px)`
-              : `calc(50% + ${cardW / 2 + GAP / 2 - 24}px)`,
-            transform: "translateX(-50%)",
-          }
+      </div>
 
-          return (
+      {/* ── NAV BAR (fuera del carousel, sin superposiciones) ── */}
+      <div className="prop-nav" style={{ maxWidth: cardW }}>
+        <span className="prop-nav__counter">
+          {String(active + 1).padStart(2, "0")}
+          <span className="prop-nav__counter-sep"> / </span>
+          {String(N).padStart(2, "0")}
+        </span>
+
+        <div className="prop-nav__track">
+          {SHOWCASE.map((_, i) => (
             <button
-              key={dir}
-              onClick={isPrev ? goPrev : goNext}
-              aria-label={isPrev ? "Previous property" : "Next property"}
-              style={{
-                position:  "absolute",
-                width:     isMobile ? 44 : 48,
-                height:    isMobile ? 44 : 48,
-                borderRadius: "50%",
-                background: "#1A1A1A",
-                border:    "none",
-                cursor:    "pointer",
-                display:   "flex",
-                alignItems:     "center",
-                justifyContent: "center",
-                color:     "#fff",
-                zIndex:    20,
-                boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
-                transition: "background 0.25s",
-                ...(isMobile ? mobileStyle : desktopStyle),
-              }}
-              onMouseEnter={e =>
-                ((e.currentTarget as HTMLButtonElement).style.background = "var(--gold)")
-              }
-              onMouseLeave={e =>
-                ((e.currentTarget as HTMLButtonElement).style.background = "#1A1A1A")
-              }
-            >
-              {isPrev ? <ChevronLeft size={isMobile ? 18 : 20} /> : <ChevronRight size={isMobile ? 18 : 20} />}
-            </button>
-          )
-        })}
+              key={i}
+              onClick={() => { setActive(i); setImgHovered(false) }}
+              className={`prop-nav__dot ${i === active ? "active" : ""}`}
+              aria-label={`Go to property ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        <div className="prop-nav__arrows">
+          <button
+            onClick={goPrev}
+            aria-label="Previous property"
+            className="prop-nav__btn"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            onClick={goNext}
+            aria-label="Next property"
+            className="prop-nav__btn"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
 
       <style>{`
@@ -368,6 +355,73 @@ export default function Properties() {
             padding-top: 0;
             max-width: 100%;
           }
+        }
+
+        /* ── Nav bar ── */
+        .prop-nav {
+          margin: 28px auto 0;
+          padding: 0 4px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+        .prop-nav__counter {
+          font-family: 'Montserrat', sans-serif;
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text-primary);
+          letter-spacing: 0.04em;
+          white-space: nowrap;
+        }
+        .prop-nav__counter-sep {
+          color: var(--text-muted);
+          margin: 0 2px;
+        }
+        .prop-nav__track {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex: 1;
+        }
+        .prop-nav__dot {
+          height: 2px;
+          flex: 1;
+          max-width: 32px;
+          border-radius: 2px;
+          border: none;
+          background: rgba(0,0,0,0.12);
+          cursor: pointer;
+          padding: 0;
+          transition: background 0.3s ease, max-width 0.3s ease;
+        }
+        .prop-nav__dot.active {
+          background: var(--gold);
+          max-width: 48px;
+        }
+        .prop-nav__arrows {
+          display: flex;
+          gap: 8px;
+        }
+        .prop-nav__btn {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #1A1A1A;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          transition: background 0.25s;
+          flex-shrink: 0;
+        }
+        .prop-nav__btn:hover { background: var(--gold); }
+        @media (max-width: 768px) {
+          .prop-nav { max-width: calc(100vw - 48px); }
+          .prop-nav__dot { max-width: 20px; }
+          .prop-nav__dot.active { max-width: 32px; }
         }
       `}</style>
     </section>
