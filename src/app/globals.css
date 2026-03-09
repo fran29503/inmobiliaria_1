@@ -1,26 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Open+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #FAFAF8;
+  --bg-dark: #1A1A1A;
+  --bg-cream: #F5F3EF;
+  
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted: #888888;
+  --text-light: #FFFFFF;
+  
+  --gold: #C9A962;
+  --gold-dark: #A88B4A;
+  --gold-soft: #E8D5A3;
+  --gold-bg: #F9F5EC;
+  
+  --border: rgba(0,0,0,0.08);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  
+  --font-serif: 'Montserrat', -apple-system, sans-serif;
+  --font-sans: 'Open Sans', -apple-system, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(201,169,98,0.2); }
+
+.t-hero {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 4.5vw, 68px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text-light);
+}
+.t-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3.5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.t-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.8vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+.t-h3 {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.t-body-lg {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ─── Legacy utility buttons (keep for compatibility) ─── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--text-primary);
+  color: var(--text-light);
+  border: none;
+  border-radius: 8px;
+  height: 56px;
+  padding: 0 32px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  background: var(--gold);
+  transform: scale(1.02);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--text-light);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 8px;
+  height: 56px;
+  padding: 0 32px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ─── Premium Magnetic Button System ─── */
+.mag-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  height: 56px;
+  padding: 0 32px;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  isolation: isolate;
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, color 0.35s ease;
+}
+.mag-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* — Primary: dark fill → gold on hover — */
+.mag-btn--primary {
+  background: var(--text-primary);
+  color: #fff;
+}
+.mag-btn--primary:hover {
+  background: var(--gold);
+  box-shadow: 0 0 0 1px rgba(201,169,98,0.3), 0 8px 28px rgba(201,169,98,0.28);
+}
+
+/* — Gold: gold fill → darker gold on hover — */
+.mag-btn--gold {
+  background: var(--gold);
+  color: #1A1A1A;
+}
+.mag-btn--gold:hover {
+  background: var(--gold-dark);
+  box-shadow: 0 8px 28px rgba(201,169,98,0.35);
+}
+
+/* — Secondary: outline on dark bg — */
+.mag-btn--secondary {
+  background: transparent;
+  color: rgba(250,250,248,0.88);
+  border: 1px solid rgba(250,250,248,0.28);
+}
+.mag-btn--secondary:hover {
+  background: rgba(250,250,248,0.1);
+  border-color: rgba(250,250,248,0.55);
+  color: #fff;
+}
+
+/* — Nav: compact white pill — */
+.mag-btn--nav {
+  background: #fff;
+  color: var(--text-primary);
+  height: 48px;
+  padding: 0 24px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.mag-btn--nav:hover {
+  background: var(--gold);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(201,169,98,0.30);
+}
+
+/* — Shimmer sweep — */
+.mag-btn__shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.mag-btn__shimmer::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  left: -90%;
+  width: 55%;
+  height: 220%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.36) 50%,
+    transparent 100%
+  );
+  transform: skewX(-22deg);
+}
+.mag-btn--gold .mag-btn__shimmer::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.55) 50%,
+    transparent 100%
+  );
+}
+.mag-btn:hover .mag-btn__shimmer::before {
+  animation: mag-shimmer 0.68s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes mag-shimmer {
+  0%   { left: -90%; }
+  100% { left: 140%; }
+}
+
+/* — Click ripple — */
+.mag-btn__ripple {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.38);
+  transform: translate(-50%, -50%) scale(0);
+  animation: mag-ripple 0.72s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+  z-index: 0;
+}
+.mag-btn--gold .mag-btn__ripple {
+  background: rgba(255,255,255,0.5);
+}
+@keyframes mag-ripple {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.75; }
+  80%  { opacity: 0.15; }
+  100% { transform: translate(-50%, -50%) scale(220); opacity: 0; }
+}
+
+/* — Content stays above effects — */
+.mag-btn__label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.section-wrap {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+.section-padding {
+  padding: 120px 0;
+}
+
+@media (max-width: 1024px) {
+  .section-wrap { padding: 0 48px; }
+  .section-padding { padding: 80px 0; }
+}
+@media (max-width: 640px) {
+  .section-wrap { padding: 0 24px; }
+  .section-padding { padding: 60px 0; }
+  .btn-primary, .btn-secondary { height: 52px; padding: 0 24px; font-size: 13px; }
 }
