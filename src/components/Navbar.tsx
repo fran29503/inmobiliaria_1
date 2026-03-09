@@ -102,6 +102,7 @@ export default function Navbar() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 3.1 }}
+              className="nav__cta-wrap"
             >
               <InteractiveHoverButton
                 text="Book Viewing"
@@ -352,7 +353,7 @@ export default function Navbar() {
           .nav__inner { padding: 0 48px; }
         }
         @media (max-width: 900px) {
-          .nav__links, .nav__cta { display: none; }
+          .nav__links, .nav__cta, .nav__cta-wrap { display: none; }
           .nav__hamburger { display: flex; }
           .nav__inner { padding: 0 24px; }
         }

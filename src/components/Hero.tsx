@@ -273,11 +273,17 @@ export default function Hero() {
 
         @media (max-width: 1024px) {
           .hero__inner { padding: 0 48px; }
+          .hero__content { padding: 140px 0 80px; }
         }
         @media (max-width: 640px) {
           .hero__inner { padding: 0 24px; }
+          .hero__content { padding: 120px 0 80px; }
           .hero__ctas { flex-direction: column; }
-          .hero__indicators { bottom: 50px; }
+          .hero__ctas > * { width: 100%; }
+          .hero__subtitle { font-size: 16px; margin-bottom: 36px; }
+          .hero__indicators { bottom: 44px; }
+          .hero__scroll { display: none; }
+          .hero__tag { font-size: 10px; padding: 8px 14px; margin-bottom: 28px; }
         }
       `}</style>
     </section>
