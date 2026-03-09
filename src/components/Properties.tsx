@@ -251,6 +251,8 @@ export default function Properties() {
           margin: 28px auto 0;
           padding: 0 4px;
           display: flex;
+          align-items: center;
+          justify-content: center;
           gap: 12px;
         }
         .prop-arrow__btn {
