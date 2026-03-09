@@ -285,41 +285,14 @@ export default function Properties() {
 
       </div>
 
-      {/* ── NAV BAR (fuera del carousel, sin superposiciones) ── */}
-      <div className="prop-nav" style={{ maxWidth: cardW }}>
-        <span className="prop-nav__counter">
-          {String(active + 1).padStart(2, "0")}
-          <span className="prop-nav__counter-sep"> / </span>
-          {String(N).padStart(2, "0")}
-        </span>
-
-        <div className="prop-nav__track">
-          {SHOWCASE.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => { setActive(i); setImgHovered(false) }}
-              className={`prop-nav__dot ${i === active ? "active" : ""}`}
-              aria-label={`Go to property ${i + 1}`}
-            />
-          ))}
-        </div>
-
-        <div className="prop-nav__arrows">
-          <button
-            onClick={goPrev}
-            aria-label="Previous property"
-            className="prop-nav__btn"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          <button
-            onClick={goNext}
-            aria-label="Next property"
-            className="prop-nav__btn"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
+      {/* ── FLECHAS ── */}
+      <div className="prop-arrows">
+        <button onClick={goPrev} aria-label="Previous property" className="prop-arrow__btn">
+          <ChevronLeft size={20} />
+        </button>
+        <button onClick={goNext} aria-label="Next property" className="prop-arrow__btn">
+          <ChevronRight size={20} />
+        </button>
       </div>
 
       <style>{`
@@ -357,55 +330,17 @@ export default function Properties() {
           }
         }
 
-        /* ── Nav bar ── */
-        .prop-nav {
-          margin: 28px auto 0;
-          padding: 0 4px;
+        /* ── Flechas ── */
+        .prop-arrows {
           display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
+          justify-content: center;
+          gap: 12px;
+          margin-top: 40px;
+          padding-bottom: 8px;
         }
-        .prop-nav__counter {
-          font-family: 'Montserrat', sans-serif;
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--text-primary);
-          letter-spacing: 0.04em;
-          white-space: nowrap;
-        }
-        .prop-nav__counter-sep {
-          color: var(--text-muted);
-          margin: 0 2px;
-        }
-        .prop-nav__track {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex: 1;
-        }
-        .prop-nav__dot {
-          height: 2px;
-          flex: 1;
-          max-width: 32px;
-          border-radius: 2px;
-          border: none;
-          background: rgba(0,0,0,0.12);
-          cursor: pointer;
-          padding: 0;
-          transition: background 0.3s ease, max-width 0.3s ease;
-        }
-        .prop-nav__dot.active {
-          background: var(--gold);
-          max-width: 48px;
-        }
-        .prop-nav__arrows {
-          display: flex;
-          gap: 8px;
-        }
-        .prop-nav__btn {
-          width: 40px;
-          height: 40px;
+        .prop-arrow__btn {
+          width: 48px;
+          height: 48px;
           border-radius: 50%;
           background: #1A1A1A;
           border: none;
@@ -414,14 +349,16 @@ export default function Properties() {
           align-items: center;
           justify-content: center;
           color: #fff;
-          transition: background 0.25s;
-          flex-shrink: 0;
+          transition: background 0.25s ease, transform 0.2s ease;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.15);
         }
-        .prop-nav__btn:hover { background: var(--gold); }
+        .prop-arrow__btn:hover {
+          background: var(--gold);
+          transform: scale(1.08);
+        }
         @media (max-width: 768px) {
-          .prop-nav { max-width: calc(100vw - 48px); }
-          .prop-nav__dot { max-width: 20px; }
-          .prop-nav__dot.active { max-width: 32px; }
+          .prop-arrows { margin-top: 28px; }
+          .prop-arrow__btn { width: 44px; height: 44px; }
         }
       `}</style>
     </section>
